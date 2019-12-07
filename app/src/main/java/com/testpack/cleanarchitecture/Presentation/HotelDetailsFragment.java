@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.google.gson.Gson;
 import com.testpack.cleanarchitecture.Data.HotelComment;
 import com.testpack.cleanarchitecture.Data.HotelDetails;
 import com.testpack.cleanarchitecture.R;
+import com.testpack.cleanarchitecture.StaticData;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class HotelDetailsFragment extends Fragment {
     private RecyclerView mRecyclerView;
 //    private SharedPreferences sharedPreferences = ;
 
-    SharedPreferences.Editor editor ;
+
 
 
     public HotelDetailsFragment() {
@@ -61,7 +63,7 @@ public class HotelDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_hotel_details, container, false);
 
-        editor = getActivity().getSharedPreferences("testpref", 0).edit();
+
         setUpViews(view);
         setUpData();
         return view;
@@ -82,8 +84,10 @@ public class HotelDetailsFragment extends Fragment {
         hotelViewModel.getHotelDetailsLiveData().observe(this, new Observer<HotelDetails>() {
             @Override
             public void onChanged(HotelDetails hotelDetails) {
-                populateUI(hotelDetails);
-               editor.putString("data",new Gson().toJson(hotelDetails));
+                if(hotelDetails != null) {
+                    populateUI(hotelDetails);
+                }
+               //editor.putString("data",new Gson().toJson(hotelDetails));
             }
         });
 
@@ -100,7 +104,9 @@ public class HotelDetailsFragment extends Fragment {
     }
 
     private void populateComments(List<HotelComment> hotelcomments) {
+
         CommentsAdpater commentsAdpater = new CommentsAdpater(getActivity(),hotelcomments);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(commentsAdpater);
         commentsAdpater.notifyDataSetChanged();
 
@@ -111,6 +117,8 @@ public class HotelDetailsFragment extends Fragment {
         hotelLocation.setText(hotelDetails.getLocation());
         hotelDescription.setText(hotelDetails.getDescription());
         hotelRating.setText(hotelDetails.getRating().toString());
+
+        //StaticData.hotelDetails = hotelDetails;
     }
 
 

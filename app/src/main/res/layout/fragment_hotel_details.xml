@@ -82,5 +82,6 @@
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/mRecyclerView"
        android:layout_width="match_parent"
+       android:background="#C6CACD"
        android:layout_height="250dp"/>
 </LinearLayout>

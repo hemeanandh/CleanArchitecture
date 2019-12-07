@@ -1,16 +1,16 @@
-package com.testpack.cleanarchitecture.Domain;
+package com.testpack.cleanarchitecture.Data;
 
 import com.testpack.cleanarchitecture.Data.APICallback;
-import com.testpack.cleanarchitecture.Data.ApIRepository;
 import com.testpack.cleanarchitecture.Data.HotelComment;
 import com.testpack.cleanarchitecture.Data.HotelDetails;
+import com.testpack.cleanarchitecture.Domain.ApIRepository;
+import com.testpack.cleanarchitecture.Domain.ApiDataSource;
 import com.testpack.cleanarchitecture.StaticData;
 
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import retrofit2.Call;
 
 public class APIRepositoryImpl implements ApIRepository {
 
@@ -26,21 +26,22 @@ public class APIRepositoryImpl implements ApIRepository {
     public void getHotelDetail(APICallback<HotelDetails> apiCallback) {
 
 
-//        if(StaticData.hotelDetails != null) {
-//            apiCallback.onSuccess(StaticData.hotelDetails);
-//        } else {
+        if(StaticData.hotelDetails != null) {
+            apiCallback.onSuccess(StaticData.hotelDetails);
+        } else {
              apiDataSource.getHotelDetails(apiCallback);
-//        }
+        }
 
 //        return hotelDetailsMutableLiveData;
 
     }
 
-    public LiveData<List<HotelComment>> getHotelComments(APICallback apiCallback) {
+    public LiveData<List<HotelComment>> getHotelComments(APICallback<List<HotelComment>> apiCallback) {
 
-        if(StaticData.hotelDetails != null) {
+        if(StaticData.hotelComments != null) {
+
         } else {
-            return apiDataSource.getHotelComments();
+            return apiDataSource.getHotelComments(apiCallback);
         }
 
         return hotelCommentsLiveData;

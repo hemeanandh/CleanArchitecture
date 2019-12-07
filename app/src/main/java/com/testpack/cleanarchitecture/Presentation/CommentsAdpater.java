@@ -22,17 +22,18 @@ public class CommentsAdpater extends RecyclerView.Adapter<CommentsViewHolder> {
         mContext = context;
     }
 
-    @NonNull
+
     @Override
-    public CommentsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CommentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.listitem,parent,false);
         return new CommentsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentsViewHolder holder, int position) {
-        CommentsViewHolder commentsViewHolder = (CommentsViewHolder) holder;
-        commentsViewHolder.commentsMessage.setText(hotelCommentsList.get(position).getComment());
+    public void onBindViewHolder( CommentsViewHolder holder, int position) {
+
+        holder.commentsMessage.setText(hotelCommentsList.get(position).getComment());
+        holder.commentsName.setText(hotelCommentsList.get(position).getUser());
     }
 
 

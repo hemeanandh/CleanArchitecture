@@ -1,22 +1,20 @@
 package com.testpack.cleanarchitecture.Presentation;
 
-import android.app.Application;
-
+import com.testpack.cleanarchitecture.Data.APICallback;
+import com.testpack.cleanarchitecture.Domain.ApIRepository;
 import com.testpack.cleanarchitecture.Data.HotelComment;
-import com.testpack.cleanarchitecture.Domain.APIRepositoryImpl;
+import com.testpack.cleanarchitecture.Data.APIRepositoryImpl;
 import com.testpack.cleanarchitecture.Data.HotelDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HotelViewModel extends ViewModel {
 
-    APIRepositoryImpl apiRepository;
+    ApIRepository apiRepository;
     private MutableLiveData<HotelDetails> hotelDetailsLiveData = new MutableLiveData <HotelDetails>() ;
     private MutableLiveData<List<HotelComment>> hotelCommentsMutableLiveData = new MutableLiveData<List<HotelComment>>();
 
@@ -31,32 +29,49 @@ public class HotelViewModel extends ViewModel {
         return hotelCommentsMutableLiveData;
     }
 
-    public void getHotelDetailsFromApi(Application application) {
+    public void getHotelDetailsFromApi() {
 
-        apiRepository.getHotelDetail().enqueue(new Callback<HotelDetails>() {
+        apiRepository.getHotelDetail(new APICallback<HotelDetails>() {
             @Override
-            public void onResponse(Call<HotelDetails> call, Response<HotelDetails> response) {
-                hotelDetailsLiveData.postValue(response.body());
+            public void onSuccess(HotelDetails hotelDetails) {
+                hotelDetailsLiveData.postValue(hotelDetails);
             }
 
             @Override
-            public void onFailure(Call<HotelDetails> call, Throwable t) {
+            public void onError(String error) {
 
             }
         });
     }
 
     public void getHotelCommentsFromApi() {
-        apiRepository.getHotelComments().enqueue(new Callback<List<HotelComment>>() {
+        apiRepository.getHotelComments(new APICallback<List<HotelComment>>() {
             @Override
-            public void onResponse(Call<List<HotelComment>> call, Response<List<HotelComment>> response) {
-                hotelCommentsMutableLiveData.postValue(response.body());
+            public void onSuccess(List<HotelComment> hotelCommentList) {
+                List<HotelComment> hotelComments =  hotelCommentsMutableLiveData.getValue();
+                hotelCommentList.addAll(hotelComments);
+                hotelCommentsMutableLiveData.postValue(hotelComments);
             }
 
             @Override
-            public void onFailure(Call<List<HotelComment>> call, Throwable t) {
-                System.out.println("response"+call);
+            public void onError(String error) {
+
             }
         });
+    }
+
+    public void updateComments(HotelComment hotelComment) {
+        List<HotelComment> hotelComments = hotelCommentsMutableLiveData.getValue();
+        hotelComments.add(hotelComment);
+        hotelCommentsMutableLiveData.setValue(hotelComments);
+//        hotelCommentsMutableLiveData.postValue(hotelComments);
+
+    }
+
+    public void getUpdatedComments() {
+        List<HotelComment> hotelCommentsList = hotelCommentsMutableLiveData.getValue();
+        List<HotelComment> hotelComments =  hotelCommentsMutableLiveData.getValue();
+        hotelCommentsList.addAll(hotelComments);
+        hotelCommentsMutableLiveData.postValue(hotelComments);
     }
 }
